@@ -1,0 +1,9 @@
+services:
+  adminer:
+    container_name: todo-db-viewer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db

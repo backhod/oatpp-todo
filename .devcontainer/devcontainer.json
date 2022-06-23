@@ -1,0 +1,16 @@
+{
+  "name": "todo",
+  "dockerComposeFile": ["../docker-compose.yml", "./docker-compose.test.yml"],
+  "service": "app",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "twxs.cmake",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.cpptools"
+      ]
+    }
+  }
+}
