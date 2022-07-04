@@ -28,20 +28,21 @@ RUN ./bootstrap-vcpkg.sh -disableMetrics
 RUN ./vcpkg install oatpp
 RUN ./vcpkg install oatpp-postgresql
 RUN ./vcpkg install oatpp-swagger
+RUN ./vcpkg install openssl
 
 RUN mkdir /root/.vcpkg && touch /root/.vcpkg/vcpkg.path.txt && ./vcpkg integrate install
 
 # # Create appuser.
 # ENV USER=appuser
-# ENV UID=10001 
-# # See https://stackoverflow.com/a/55757473/12429735RUN 
-# RUN adduser \    
-#   --disabled-password \    
-#   --gecos "" \    
-#   --home "/nonexistent" \    
-#   --shell "/sbin/nologin" \    
-#   --no-create-home \    
-#   --uid "${UID}" \    
+# ENV UID=10001
+# # See https://stackoverflow.com/a/55757473/12429735RUN
+# RUN adduser \
+#   --disabled-password \
+#   --gecos "" \
+#   --home "/nonexistent" \
+#   --shell "/sbin/nologin" \
+#   --no-create-home \
+#   --uid "${UID}" \
 #   "${USER}"
 
 # Copy source
@@ -49,10 +50,10 @@ COPY . ${APPLICATION_DIR}
 
 # Compile
 RUN mkdir build
-WORKDIR ${APPLICATION_DIR}/build
+# WORKDIR ${APPLICATION_DIR}/build
 
-RUN cmake ..
-RUN make
+# RUN cmake ..
+# RUN make
 
 ########################################################################
 # Production Image

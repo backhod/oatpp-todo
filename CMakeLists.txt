@@ -3,11 +3,6 @@ cmake_minimum_required(VERSION 3.1)
 # https://github.com/microsoft/vcpkg/blob/master/docs/examples/installing-and-using-packages.md#cmake-toolchain-file
 set(CMAKE_TOOLCHAIN_FILE /vcpkg/scripts/buildsystems/vcpkg.cmake)
 
-# For creating a static standalone executable without dynamic linking
-set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-set(BUILD_SHARED_LIBS OFF)
-set(CMAKE_EXE_LINKER_FLAGS "-static")
-
 set(project_name todo) ## rename your project here
 
 project(${project_name})
@@ -16,9 +11,18 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(${project_name}-lib
         src/AppComponent.hpp
-        src/controller/StatusController.cpp
-        src/controller/StatusController.hpp
-        src/dto/DTOs.hpp
+        src/DatabaseComponent.hpp
+        src/ErrorHandler.hpp
+        src/ErrorHandler.cpp
+        src/ServiceComponent.hpp
+        src/SwaggerComponent.hpp
+        src/controller/TodoController.hpp
+        src/dto/TodoDto.hpp
+        src/dto/StatusDto.hpp
+        src/dto/ConfigDto.hpp
+        src/service/TodoService.hpp
+        src/service/TodoService.cpp
+        src/db/TodoDb.hpp
 )
 
 ## link libs
@@ -26,19 +30,33 @@ add_library(${project_name}-lib
 find_package(oatpp            1.3.0 REQUIRED)
 find_package(oatpp-postgresql 1.3.0 REQUIRED)
 find_package(oatpp-swagger    1.3.0 REQUIRED)
+find_package(OpenSSL 3.0.3 REQUIRED)
 
 target_link_libraries(${project_name}-lib
         PUBLIC oatpp::oatpp
         PUBLIC oatpp::oatpp-test
+        PUBLIC oatpp::oatpp-swagger
+        PUBLIC oatpp::oatpp-postgresql
+        PRIVATE OpenSSL::SSL OpenSSL::Crypto
+)
+
+
+add_definitions(
+        # Path to swagger-ui resources #
+        -DOATPP_SWAGGER_RES_PATH="${oatpp-swagger_INCLUDE_DIRS}/../bin/oatpp-swagger/res"
+
+        # Path to config file #
+        -DCONFIG_PATH="${CMAKE_CURRENT_LIST_DIR}/resources/config.json"
+
+        ## Path to database migration scripts
+        -DDATABASE_MIGRATIONS="${CMAKE_CURRENT_SOURCE_DIR}/sql"
 )
 
 target_include_directories(${project_name}-lib PUBLIC src)
-
 ## add executables
 
 add_executable(${project_name}-exe
         src/App.cpp
-        # test/app/StatusApiTestClient.hpp
         )
 target_link_libraries(${project_name}-exe ${project_name}-lib)
 add_dependencies(${project_name}-exe ${project_name}-lib)
