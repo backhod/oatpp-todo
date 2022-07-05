@@ -1,13 +1,14 @@
 #include "TodoService.hpp"
 
-oatpp::Object<TodoDto> TodoService::createTodo(const oatpp::Object<TodoDto> &todo)
+oatpp::Object<TodoDto> TodoService::createTodo(const oatpp::Object<CreateTodoDto> &todo, const oatpp::Int32 &timestamp)
 {
-    const auto dbResult = m_database->createTodo(todo);
+    const auto dbResult = m_database->createTodo(todo, timestamp);
 
     OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500, dbResult->getErrorMessage());
+    OATPP_ASSERT_HTTP(dbResult->hasMoreToFetch(), Status::CODE_404, "User not found");
 
     auto result = dbResult->fetch<oatpp::Vector<oatpp::Object<TodoDto>>>();
-    OATPP_ASSERT_HTTP(result->size() == 1, Status::CODE_500, "Unknown error");
+    OATPP_ASSERT_HTTP(result->size() >= 1, Status::CODE_500, "Result is less than 1");
 
     return result[0];
 }
@@ -31,11 +32,11 @@ oatpp::Vector<oatpp::Object<TodoDto>> TodoService::getAllTodo()
 
     return items;
 }
-oatpp::Object<TodoDto> TodoService::updateTodo(const oatpp::Object<TodoDto> &todo)
+oatpp::Object<TodoDto> TodoService::updateTodo(const oatpp::Object<UpdateTodoDto> &todo, const oatpp::Int32 &id)
 {
-    auto dbResult = m_database->updateTodo(todo);
+    auto dbResult = m_database->updateTodo(todo, id);
     OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500, dbResult->getErrorMessage());
-    return getTodoById(todo->id);
+    return getTodoById(id);
 }
 oatpp::Object<StatusDto> TodoService::deleteTodo(const oatpp::Int32 &id)
 {

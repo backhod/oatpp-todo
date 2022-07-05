@@ -34,27 +34,27 @@ public:
     {
         info->summary = "Create new Todo";
 
-        info->addConsumes<Object<TodoDto>>("application/json");
+        info->addConsumes<Object<CreateTodoDto>>("application/json");
 
         info->addResponse<Object<TodoDto>>(Status::CODE_200, "application/json");
         info->addResponse<Object<StatusDto>>(Status::CODE_404, "application/json");
         info->addResponse<Object<StatusDto>>(Status::CODE_500, "application/json");
     }
     ENDPOINT("POST", "todos", createTodo,
-             BODY_DTO(Object<TodoDto>, todoDto))
+             BODY_DTO(Object<CreateTodoDto>, todoDto))
     {
         const auto p1 = std::chrono::system_clock::now();
         auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(
                              p1.time_since_epoch())
                              .count();
-        return createDtoResponse(Status::CODE_200, m_todoService.createTodo(todoDto));
+        return createDtoResponse(Status::CODE_200, m_todoService.createTodo(todoDto, timestamp));
     }
 
     ENDPOINT_INFO(putTodo)
     {
         info->summary = "Update Todo by todoId";
 
-        info->addConsumes<Object<TodoDto>>("application/json");
+        info->addConsumes<Object<UpdateTodoDto>>("application/json");
 
         info->addResponse<Object<TodoDto>>(Status::CODE_200, "application/json");
         info->addResponse<Object<StatusDto>>(Status::CODE_404, "application/json");
@@ -64,10 +64,9 @@ public:
     }
     ENDPOINT("PUT", "todos/{todoId}", putTodo,
              PATH(Int32, todoId),
-             BODY_DTO(Object<TodoDto>, todoDto))
+             BODY_DTO(Object<UpdateTodoDto>, todoDto))
     {
-        todoDto->id = todoId;
-        return createDtoResponse(Status::CODE_200, m_todoService.updateTodo(todoDto));
+        return createDtoResponse(Status::CODE_200, m_todoService.updateTodo(todoDto, todoId));
     }
 
     ENDPOINT_INFO(getTodoById)

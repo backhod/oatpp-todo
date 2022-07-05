@@ -21,6 +21,21 @@ class TodoDto : public oatpp::DTO
     DTO_FIELD(Boolean, status);
 };
 
+class CreateTodoDto : public oatpp::DTO
+{
+    DTO_INIT(CreateTodoDto, DTO)
+
+    DTO_FIELD(String, task);
+};
+
+class UpdateTodoDto : public oatpp::DTO
+{
+    DTO_INIT(UpdateTodoDto, DTO)
+
+    DTO_FIELD(String, task);
+    DTO_FIELD(Boolean, status);
+};
+
 #include OATPP_CODEGEN_END(DTO)
 
 #endif /* TodoDto_hpp */

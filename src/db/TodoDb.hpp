@@ -21,9 +21,10 @@ public:
 
     QUERY(createTodo,
           "INSERT INTO Todo"
-          "(task, timestamp) VALUES"
-          "(:todo.task, :todo.timestamp);",
-          PARAM(oatpp::Object<TodoDto>, todo))
+          "(task, timestamp) VALUES "
+          "(:todo.task, :timestamp);",
+          PARAM(oatpp::Object<CreateTodoDto>, todo),
+          PARAM(oatpp::Int32, timestamp))
 
     QUERY(getAllTodo, "SELECT * FROM Todo;")
 
@@ -34,10 +35,10 @@ public:
           "SET"
           " task=:todo.task "
           " status=:todo.status "
-          " timestamp=:todo.timestamp "
           "WHERE"
-          " id=:todo.id;",
-          PARAM(oatpp::Object<TodoDto>, todo))
+          " id=:id;",
+          PARAM(oatpp::Object<UpdateTodoDto>, todo),
+          PARAM(oatpp::Int32, id))
 
     QUERY(deleteTodo, "DELETE FROM Todo WHERE id=:id", PARAM(oatpp::Int32, id))
 };

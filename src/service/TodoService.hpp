@@ -14,10 +14,10 @@ private:
     typedef oatpp::web::protocol::http::Status Status;
 
 public:
-    oatpp::Object<TodoDto> createTodo(const oatpp::Object<TodoDto> &todo);
+    oatpp::Object<TodoDto> createTodo(const oatpp::Object<CreateTodoDto> &todo, const oatpp::Int32 &timestamp);
     oatpp::Object<TodoDto> getTodoById(const oatpp::Int32 &id, const oatpp::provider::ResourceHandle<oatpp::orm::Connection> &connection = nullptr);
     oatpp::Vector<oatpp::Object<TodoDto>> getAllTodo();
-    oatpp::Object<TodoDto> updateTodo(const oatpp::Object<TodoDto> &todo);
+    oatpp::Object<TodoDto> updateTodo(const oatpp::Object<UpdateTodoDto> &todo, const oatpp::Int32 &id);
     oatpp::Object<StatusDto> deleteTodo(const oatpp::Int32 &id);
 };
 
