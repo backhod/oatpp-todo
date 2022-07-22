@@ -1,6 +1,9 @@
 {
   "name": "todo",
-  "dockerComposeFile": ["../docker-compose.yml", "./docker-compose.test.yml"],
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "./docker-compose.test.yml"
+  ],
   "service": "app",
   "workspaceFolder": "/app",
   "shutdownAction": "stopCompose",
@@ -9,7 +12,10 @@
       "extensions": [
         "twxs.cmake",
         "ms-vscode.cmake-tools",
-        "ms-vscode.cpptools"
+        "ms-vscode.cpptools",
+        "donjayamanne.githistory",
+        "github.copilot",
+        "xaver.clang-format"
       ]
     }
   }
