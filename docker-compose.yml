@@ -19,7 +19,8 @@ services:
       - db
     tty: true
     stdin_open: true
-
+    environment:
+      - CONFIG_PROFILE=local-docker
     volumes:
       - .:/app
 

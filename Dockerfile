@@ -11,12 +11,17 @@ ENV TZ=Asia/Kolkata
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Installing dependencies
-RUN apt-get update
+# RUN apt-get update
+
+# Install formatter
+RUN apt-get update && apt-get install -y clang-format
+
 RUN apt-get install -y \
   # For vcpkg
   git curl zip \
   # For packages
   cmake g++ pkg-config autoconf
+
 
 # Install dependency manager (vcpkg)
 RUN git clone https://github.com/Microsoft/vcpkg.git
@@ -48,12 +53,16 @@ RUN mkdir /root/.vcpkg && touch /root/.vcpkg/vcpkg.path.txt && ./vcpkg integrate
 # Copy source
 COPY . ${APPLICATION_DIR}
 
+# Add APPLICATION_DIR to git safe.directory
+RUN git config --global --add safe.directory ${APPLICATION_DIR}
+
 # Compile
 RUN mkdir build
-# WORKDIR ${APPLICATION_DIR}/build
 
-# RUN cmake ..
-# RUN make
+WORKDIR ${APPLICATION_DIR}/build
+
+RUN cmake ..
+RUN make
 
 ########################################################################
 # Production Image
