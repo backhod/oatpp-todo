@@ -1,9 +1,9 @@
 
-#include "controller/TodoController.hpp"
 #include "AppComponent.hpp"
 #include "DatabaseComponent.hpp"
 #include "ServiceComponent.hpp"
 #include "SwaggerComponent.hpp"
+#include "controller/TodoController.hpp"
 
 #include "oatpp-swagger/Controller.hpp"
 
@@ -11,9 +11,7 @@
 
 #include <iostream>
 
-void run(const oatpp::base::CommandLineArguments &args)
-{
-
+void run(const oatpp::base::CommandLineArguments& args) {
   AppComponent appComponent(args);
   ServiceComponent serviceComponent;
   SwaggerComponent swaggerComponent;
@@ -24,23 +22,27 @@ void run(const oatpp::base::CommandLineArguments &args)
   auto router = serviceComponent.httpRouter.getObject();
   oatpp::web::server::api::Endpoints docEndpoints;
 
-  docEndpoints.append(router->addController(TodoController::createShared())->getEndpoints());
+  docEndpoints.append(
+      router->addController(TodoController::createShared())->getEndpoints());
 
   router->addController(oatpp::swagger::Controller::createShared(docEndpoints));
 
   /* create server */
 
-  oatpp::network::Server server(serviceComponent.serverConnectionProvider.getObject(),
-                                serviceComponent.serverConnectionHandler.getObject());
+  oatpp::network::Server server(
+      serviceComponent.serverConnectionProvider.getObject(),
+      serviceComponent.serverConnectionHandler.getObject());
 
-  OATPP_LOGD("Server", "Running on port %s...", serviceComponent.serverConnectionProvider.getObject()->getProperty("port").toString()->c_str());
+  OATPP_LOGD("Server", "Running on port %s...",
+             serviceComponent.serverConnectionProvider.getObject()
+                 ->getProperty("port")
+                 .toString()
+                 ->c_str());
 
   server.run();
 }
 
-int main(int argc, const char *argv[])
-{
-
+int main(int argc, const char* argv[]) {
   oatpp::base::Environment::init();
 
   run(oatpp::base::CommandLineArguments(argc, argv));
