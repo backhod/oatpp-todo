@@ -1,7 +1,0 @@
-[submodule "example-microservices"]
-	path = examples/example-microservices
-	url = git@github.com:oatpp/example-microservices.git
-
-[submodule "oatpp-starter"]
-	path = examples/oatpp-starter
-	url = git@github.com:oatpp/oatpp-starter.git
