@@ -1,0 +1,6 @@
+CREATE TABLE Todo(
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    timestamp INTEGER,
+    status BOOLEAN NOT NULL DEFAULT FALSE
+);

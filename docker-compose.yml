@@ -4,7 +4,10 @@ services:
     image: postgres:14.4-alpine
     restart: always
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: example
+    ports:
+      - '5432:5432'
 
   app:
     container_name: todo-app
@@ -16,9 +19,12 @@ services:
       - db
     tty: true
     stdin_open: true
-
+    environment:
+      - CONFIG_PROFILE=docker
     volumes:
       - .:/app
+    ports:
+      - '8000:8000'
 
 networks:
   default:

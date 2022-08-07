@@ -1,54 +1,53 @@
-#include "./controller/StatusController.hpp"
-#include "./AppComponent.hpp"
+
+#include "AppComponent.hpp"
+#include "DatabaseComponent.hpp"
+#include "ServiceComponent.hpp"
+#include "SwaggerComponent.hpp"
+#include "controller/TodoController.hpp"
+
+#include "oatpp-swagger/Controller.hpp"
 
 #include "oatpp/network/Server.hpp"
 
 #include <iostream>
 
-void run() {
+void run(const oatpp::base::CommandLineArguments& args) {
+  AppComponent appComponent(args);
+  ServiceComponent serviceComponent;
+  SwaggerComponent swaggerComponent;
+  DatabaseComponent databaseComponent;
 
-  /* Register Components in scope of run() method */
-  AppComponent components;
+  /* create ApiControllers and add endpoints to router */
 
-  /* Get router component */
-  OATPP_COMPONENT(std::shared_ptr<oatpp::web::server::HttpRouter>, router);
+  auto router = serviceComponent.httpRouter.getObject();
+  oatpp::web::server::api::Endpoints docEndpoints;
 
-  /* Create StatusController and add all of its endpoints to router */
-  router->addController(std::make_shared<StatusController>());
+  docEndpoints.append(
+      router->addController(TodoController::createShared())->getEndpoints());
 
-  /* Get connection handler component */
-  OATPP_COMPONENT(std::shared_ptr<oatpp::network::ConnectionHandler>, connectionHandler);
+  router->addController(oatpp::swagger::Controller::createShared(docEndpoints));
 
-  /* Get connection provider component */
-  OATPP_COMPONENT(std::shared_ptr<oatpp::network::ServerConnectionProvider>, connectionProvider);
+  /* create server */
 
-  /* Create server which takes provided TCP connections and passes them to HTTP connection handler */
-  oatpp::network::Server server(connectionProvider, connectionHandler);
+  oatpp::network::Server server(
+      serviceComponent.serverConnectionProvider.getObject(),
+      serviceComponent.serverConnectionHandler.getObject());
 
-  /* Print info about server port */
-  OATPP_LOGI("ToDo", "Server running on port %s", connectionProvider->getProperty("port").getData());
+  OATPP_LOGD("Server", "Running on port %s...",
+             serviceComponent.serverConnectionProvider.getObject()
+                 ->getProperty("port")
+                 .toString()
+                 ->c_str());
 
-  /* Run server */
   server.run();
-  
 }
 
-/**
- *  main
- */
-int main(int argc, const char * argv[]) {
-
+int main(int argc, const char* argv[]) {
   oatpp::base::Environment::init();
 
-  run();
-  
-  /* Print how much objects were created during app running, and what have left-probably leaked */
-  /* Disable object counting for release builds using '-D OATPP_DISABLE_ENV_OBJECT_COUNTERS' flag for better performance */
-  std::cout << "\nEnvironment:\n";
-  std::cout << "objectsCount = " << oatpp::base::Environment::getObjectsCount() << "\n";
-  std::cout << "objectsCreated = " << oatpp::base::Environment::getObjectsCreated() << "\n\n";
-  
+  run(oatpp::base::CommandLineArguments(argc, argv));
+
   oatpp::base::Environment::destroy();
-  
+
   return 0;
 }
