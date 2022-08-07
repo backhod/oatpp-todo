@@ -44,6 +44,10 @@ oatpp::Object<TodoDto> TodoService::updateTodo(
   auto dbResult = m_database->updateTodo(todo, id);
   OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500,
                     dbResult->getErrorMessage());
+
+  OATPP_ASSERT_HTTP(dbResult->hasMoreToFetch(), Status::CODE_404,
+                    "Todo not found");
+
   return getTodoById(id);
 }
 
@@ -51,6 +55,10 @@ oatpp::Object<StatusDto> TodoService::deleteTodo(const oatpp::Int32& id) {
   auto dbResult = m_database->deleteTodo(id);
   OATPP_ASSERT_HTTP(dbResult->isSuccess(), Status::CODE_500,
                     dbResult->getErrorMessage());
+
+  OATPP_ASSERT_HTTP(dbResult->hasMoreToFetch(), Status::CODE_404,
+                    "Todo not found");
+
   auto status = StatusDto::createShared();
   status->status = "OK";
   status->code = 200;

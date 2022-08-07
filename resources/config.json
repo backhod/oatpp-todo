@@ -1,14 +1,14 @@
 {
-  "dev": {
+  "local": {
     "host": "0.0.0.0",
     "port": 8000,
     "swaggerHost": "localhost:8000",
-    "dbConnectionString": "postgresql://postgres:example@localhost:5432/todo"
+    "dbConnectionString": "postgresql://postgres:example@localhost:5432"
   },
-  "local-docker": {
+  "docker": {
     "host": "0.0.0.0",
     "port": 8000,
     "swaggerHost": "localhost:8000",
-    "dbConnectionString": "postgresql://postgres:example@db:5432/todo"
+    "dbConnectionString": "postgresql://postgres:example@db:5432"
   }
 }

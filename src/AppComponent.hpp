@@ -35,12 +35,12 @@ class AppComponent {
           objectMapper->readFromString<oatpp::Fields<oatpp::Object<ConfigDto>>>(
               configText);
 
-      const char* profileArg =
-          std::getenv("CONFIG_PROFILE");  // first read from env variable
+      // first read from env variable
+      const char* profileArg = std::getenv("CONFIG_PROFILE");
+
+      // if no env variable get from command line
       if (profileArg == nullptr) {
-        profileArg = m_cmdArgs.getNamedArgumentValue(
-            "--profile",
-            "dev");  // if no env variable get from command line
+        profileArg = m_cmdArgs.getNamedArgumentValue("--profile", "dev");
       }
 
       OATPP_LOGD("Server", "Loading configuration profile '%s'", profileArg);

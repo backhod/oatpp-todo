@@ -20,9 +20,11 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - CONFIG_PROFILE=local-docker
+      - CONFIG_PROFILE=docker
     volumes:
       - .:/app
+    ports:
+      - '8000:8000'
 
 networks:
   default:

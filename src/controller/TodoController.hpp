@@ -32,7 +32,7 @@ class TodoController : public oatpp::web::server::api::ApiController {
 
     info->addTag("Todo");
     info->addConsumes<Object<CreateTodoDto>>("application/json");
-    info->addResponse<Object<TodoDto>>(Status::CODE_200, "application/json");
+    info->addResponse<Object<StatusDto>>(Status::CODE_200, "application/json");
     info->addResponse<Object<StatusDto>>(Status::CODE_404, "application/json");
     info->addResponse<Object<StatusDto>>(Status::CODE_500, "application/json");
   }
@@ -100,6 +100,7 @@ class TodoController : public oatpp::web::server::api::ApiController {
 
     info->addTag("Todo");
     info->addResponse<Object<StatusDto>>(Status::CODE_200, "application/json");
+    info->addResponse<Object<StatusDto>>(Status::CODE_404, "application/json");
     info->addResponse<Object<StatusDto>>(Status::CODE_500, "application/json");
 
     info->pathParams["todoId"].description = "Todo Identifier";
